@@ -1,1 +1,17 @@
-{ "dependencies": { "@stricjs/app": "^1.0.0-rc.34" } }
+{
+    "name": "smx",
+    "type": "module",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "api": "bun run --cwd apps/api-gateway"
+    },
+    "devDependencies": {
+        "eslint": "^8.0.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "prettier": "^3.0.0"
+    }
+}
