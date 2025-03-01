@@ -1,5 +1,5 @@
 {
-  "name": "@smxchange/libs",
+  "name": "@bisontrade/libs",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {

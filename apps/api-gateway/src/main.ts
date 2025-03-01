@@ -7,8 +7,8 @@ async function bootstrap() {
 
   
   const config = new DocumentBuilder()
-    .setTitle('SMXchange')
-    .setDescription('The SMXchange API description')
+    .setTitle('BisonTrade')
+    .setDescription('The BisonTrade API description')
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

@@ -1,5 +1,5 @@
 {
-    "name": "smx",
+    "name": "bisontrade",
     "type": "module",
     "workspaces": [
         "apps/*",
