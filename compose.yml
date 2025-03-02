@@ -1,9 +1,8 @@
 services:
   api-gateway:
-    container_name: next-app
     build:
       context: .
       dockerfile: ./apps/api-gateway/docker/local.dockerfile
-    restart: always
+    restart: never
     ports:
       - 3000:3000

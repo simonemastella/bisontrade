@@ -4,7 +4,9 @@ FROM oven/bun:latest
 WORKDIR /app/
 
 # Copy only package files first to leverage Docker caching
-COPY package.json bun.lockb ./
+COPY package.json ./
+COPY bun.lockb ./
+COPY tsconfig.json ./
 
 # Copy application code after dependencies
 COPY ./apps/api-gateway ./apps/api-gateway
