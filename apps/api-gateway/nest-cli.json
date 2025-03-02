@@ -5,9 +5,7 @@
   "entryFile": "main.js",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": [
-      "**/*.js"
-    ],
+    "assets": ["**/*.js"],
     "watchAssets": true
   }
 }
