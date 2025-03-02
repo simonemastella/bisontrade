@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig.json",
+   "compilerOptions": {
+    "outDir": "./dist"    // Change this to your preferred output directory
+  },
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
