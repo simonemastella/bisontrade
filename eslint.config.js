@@ -28,6 +28,10 @@ export default tseslint.config({
   rules: {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { vars: 'all', args: 'after-used', argsIgnorePattern: '^_' },
+    ],
   },
   ignores: [
     '**/node_modules/**',
