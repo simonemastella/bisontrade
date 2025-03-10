@@ -1,0 +1,21 @@
+{
+   "name": "@bisontrade/db",
+   "version": "0.0.1",
+   "description": "",
+   "type": "commonjs",
+   "devDependencies": {
+      "@types/bun": "^1.2.4",
+      "typescript": "5.8.2",
+      "@types/bcrypt": "^5.0.2"
+   },
+   "dependencies": {
+      "typeorm": "0.3.21",
+      "reflect-metadata": "^0.1.13",
+      "pg": "^8.11.3",
+      "bcrypt": "^5.1.1"
+   },
+   "scripts": {
+      "start": "bunx src/index.ts",
+      "typeorm": "typeorm-ts-node-commonjs"
+   }
+}
