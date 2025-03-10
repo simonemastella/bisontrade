@@ -11,7 +11,7 @@
    "dependencies": {
       "typeorm": "0.3.21",
       "reflect-metadata": "^0.1.13",
-      "pg": "^8.4.0",
+      "pg": "^8.11.3",
       "bcrypt": "^5.1.1"
    },
    "scripts": {
