@@ -4,8 +4,12 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
+import { Trade } from './Trade';
+import { TradePair } from './TradePair';
 
 export enum PositionType {
   BUY = 'buy',
@@ -30,6 +34,9 @@ export class Order {
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
+  @ManyToOne(() => TradePair, (tradePair) => tradePair.orders)
+  tradePair: TradePair;
+
   @Column({
     type: 'enum',
     enum: PositionType,
@@ -51,9 +58,21 @@ export class Order {
   })
   status: StatusType;
 
-  @Column()
+  @Column('decimal', { precision: 78, scale: 0 })
   amount: string;
 
-  @Column({ nullable: true })
+  @Column('decimal', { precision: 36, scale: 18, nullable: true })
   price: string;
+
+  @OneToMany(() => Trade, (trade) => trade.buyOrder)
+  buyTrades: Trade[];
+
+  @OneToMany(() => Trade, (trade) => trade.sellOrder)
+  sellTrades: Trade[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

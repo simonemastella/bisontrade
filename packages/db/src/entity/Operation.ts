@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 import { Holding } from './Holding';
 
@@ -31,9 +25,9 @@ export class Operation {
   @Column()
   transaction: string;
 
-  @Column()
+  @Column('decimal', { precision: 78, scale: 0 })
   amount: string;
 
-  @Column()
+  @Column('decimal', { precision: 78, scale: 0 })
   fee: string;
 }

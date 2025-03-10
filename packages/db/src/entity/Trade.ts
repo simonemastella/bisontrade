@@ -2,11 +2,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
   Column,
   CreateDateColumn,
 } from 'typeorm';
-import { Asset } from './Asset';
 import { Order } from './Order';
 
 @Entity()
@@ -20,11 +18,11 @@ export class Trade {
   @ManyToOne(() => Order, { nullable: false })
   sellOrder: Order;
 
-  @Column('float')
-  price: number;
+  @Column('decimal', { precision: 36, scale: 18 })
+  price: string;
 
   @Column('decimal', { precision: 78, scale: 0 })
-  amount: number;
+  amount: string;
 
   @CreateDateColumn()
   timestamp: Date;
