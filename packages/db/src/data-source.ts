@@ -4,11 +4,11 @@ import * as entity from './entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DB_URL || 'localhost',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
-  username: process.env.DB_USERNAME || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'development',
+  host: env.POSTGRES_HOST,
+  port: env.POSTGRES_PORT,
+  username: env.POSTGRES_USER,
+  password: env.POSTGRES_PASSWORD,
+  database: env.POSTGRES_DB,
   synchronize: false,
   logging: false,
   entities: [

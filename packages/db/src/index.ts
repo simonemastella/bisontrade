@@ -1,12 +1,8 @@
-import { AppDataSource } from './data-source';
 import './env';
+import { AppDataSource } from './data-source';
 
-// AppDataSource.initialize()
-//   .then(async () => {
-//     console.log('init done');
-//   })
-//   .catch((error) => console.log(error));
-console.log(env);
-env.NODE_ENV;
-
-process;
+AppDataSource.initialize()
+  .then(async () => {
+    console.log('init done');
+  })
+  .catch((error) => console.log(error));
