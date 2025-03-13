@@ -1,4 +1,5 @@
 import {
+  type Relation,
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -7,9 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './User';
-import { Trade } from './Trade';
-import { TradePair } from './TradePair';
+import { User, Trade, TradePair } from '.';
 
 export enum PositionType {
   BUY = 'buy',
@@ -32,10 +31,10 @@ export class Order {
   id: number;
 
   @ManyToOne(() => User, (user) => user.orders)
-  user: User;
+  user: Relation<User>;
 
   @ManyToOne(() => TradePair, (tradePair) => tradePair.orders)
-  tradePair: TradePair;
+  tradePair: Relation<TradePair>;
 
   @Column({
     type: 'enum',
@@ -65,10 +64,10 @@ export class Order {
   price: string;
 
   @OneToMany(() => Trade, (trade) => trade.buyOrder)
-  buyTrades: Trade[];
+  buyTrades: Relation<Trade[]>;
 
   @OneToMany(() => Trade, (trade) => trade.sellOrder)
-  sellTrades: Trade[];
+  sellTrades: Relation<Trade[]>;
 
   @CreateDateColumn()
   createdAt: Date;

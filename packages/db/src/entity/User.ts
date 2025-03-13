@@ -1,6 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Holding } from './Holding';
-import { Order } from './Order';
+import {
+  type Relation,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+} from 'typeorm';
+import { Holding, Order } from '.';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
@@ -21,8 +26,8 @@ export class User {
   }
 
   @OneToMany(() => Holding, (holding) => holding.user)
-  holdings: Holding[];
+  holdings: Relation<Holding[]>;
 
   @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
+  orders: Relation<Order[]>;
 }

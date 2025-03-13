@@ -1,11 +1,12 @@
 import {
+  type Relation,
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
   Column,
   CreateDateColumn,
 } from 'typeorm';
-import { Order } from './Order';
+import { Order } from '.';
 
 @Entity()
 export class Trade {
@@ -13,10 +14,10 @@ export class Trade {
   id: number;
 
   @ManyToOne(() => Order, { nullable: false })
-  buyOrder: Order;
+  buyOrder: Relation<Order>;
 
   @ManyToOne(() => Order, { nullable: false })
-  sellOrder: Order;
+  sellOrder: Relation<Order>;
 
   @Column('decimal', { precision: 36, scale: 18 })
   price: string;

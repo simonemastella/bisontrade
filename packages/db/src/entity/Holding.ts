@@ -1,13 +1,13 @@
 import {
+  type Relation,
   Entity,
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { User } from './User';
-import { Operation } from './Operation';
-import { Asset } from './Asset';
+
+import { User, Operation, Asset } from '.';
 
 @Entity()
 export class Holding {
@@ -15,13 +15,13 @@ export class Holding {
   id: number;
 
   @ManyToOne(() => User, (user) => user.holdings)
-  user: User;
+  user: Relation<User>;
 
   @OneToMany(() => Operation, (operation) => operation.holding)
-  operations: Operation[];
+  operations: Relation<Operation[]>;
 
   @ManyToOne(() => Asset, (asset) => asset.holdings)
-  asset: Asset;
+  asset: Relation<Asset>;
 
   @Column('decimal', { precision: 78, scale: 0 })
   amount: string;

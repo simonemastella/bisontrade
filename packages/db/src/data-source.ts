@@ -1,12 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { User } from './entity/User';
-import { Asset } from './entity/Asset';
-import { Holding } from './entity/Holding';
-import { Operation } from './entity/Operation';
-import { Order } from './entity/Order';
-import { Trade } from './entity/Trade';
-import { TradePair } from './entity/TradePair';
+import * as entity from './entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -17,7 +11,15 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'development',
   synchronize: false,
   logging: false,
-  entities: [Asset, Holding, Operation, Order, Trade, TradePair, User],
+  entities: [
+    entity.Asset,
+    entity.Holding,
+    entity.Operation,
+    entity.Order,
+    entity.Trade,
+    entity.TradePair,
+    entity.User,
+  ],
   migrations: [],
   subscribers: [],
 });

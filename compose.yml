@@ -1,8 +1,0 @@
-services:
-  api-gateway:
-    build:
-      context: .
-      dockerfile: ./apps/api-gateway/docker/local.dockerfile
-    restart: never
-    ports:
-      - 3000:3000
