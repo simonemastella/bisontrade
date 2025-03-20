@@ -1,7 +1,16 @@
-# Awesome Project Build with TypeORM
+## migration
 
-Steps to run this project:
+change the **POSTGRES_HOST** to `localhost` if inside docker
+to create a migration
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+```sh
+cd packages/db
+```
+
+then
+
+```sh
+bun run generate <migration-name>
+```
+
+move the file into **./src/migrations/** folder and include it in **./src/data-source.ts**

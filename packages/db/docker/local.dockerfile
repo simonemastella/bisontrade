@@ -15,7 +15,7 @@ COPY tsconfig.json ./
 RUN bun install
 
 # Disable Next.js telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start the application
-CMD bun run db start
+CMD bun run db typeorm migration:run -d ./src/data-source

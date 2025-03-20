@@ -1,6 +1,19 @@
+import env from './env';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as entity from './entity';
+import { Init1742240909861 } from './migrations/1742240909861-Init';
+export * from './entity';
+
+const entities = [
+  entity.Asset,
+  entity.Holding,
+  entity.Operation,
+  entity.Order,
+  entity.Trade,
+  entity.TradePair,
+  entity.User,
+];
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,15 +24,8 @@ export const AppDataSource = new DataSource({
   database: env.POSTGRES_DB,
   synchronize: false,
   logging: false,
-  entities: [
-    entity.Asset,
-    entity.Holding,
-    entity.Operation,
-    entity.Order,
-    entity.Trade,
-    entity.TradePair,
-    entity.User,
-  ],
-  migrations: [],
+  entities,
+  migrations: [Init1742240909861],
+  migrationsRun: true,
   subscribers: [],
 });

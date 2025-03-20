@@ -1,4 +1,4 @@
-import { Type, Static } from '@sinclair/typebox';
+import { Type, Static, TSchema } from '@sinclair/typebox';
 import { AssertError, Value } from '@sinclair/typebox/value';
 
 const EnvSchema = Type.Object({
@@ -13,7 +13,6 @@ const EnvSchema = Type.Object({
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_DB: Type.String(),
 });
-
 type StaticEnv = Static<typeof EnvSchema>;
 
 let env: StaticEnv;

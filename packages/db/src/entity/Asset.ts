@@ -16,6 +16,9 @@ export class Asset {
   name: string;
 
   @Column()
+  name2: string;
+
+  @Column()
   decimals: number;
 
   @Column()
