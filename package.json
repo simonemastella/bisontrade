@@ -8,7 +8,7 @@
   "scripts": {
     "api": "bun run --cwd apps/api-gateway",
     "db": "bun run --cwd packages/db",
-    "local:start": "docker-compose -f compose.local.yml --env-file ./.env.local up --build -d",
+    "local:start": "docker compose -f compose.local.yml --env-file ./.env.local up --build -d",
     "local:stop": "docker-compose -f compose.local.yml down",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",

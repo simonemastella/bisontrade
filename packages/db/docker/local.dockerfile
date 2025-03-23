@@ -1,5 +1,5 @@
 # docker/dev.Dockerfile
-FROM oven/bun:latest
+FROM oven/bun:1.2.5
 
 WORKDIR /app/
 
@@ -18,4 +18,4 @@ RUN bun install
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start the application
-CMD bun run db typeorm migration:run -d ./src/data-source
+CMD bun run db typeorm migration:run

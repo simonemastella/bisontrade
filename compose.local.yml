@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/docker/local.dockerfile
-    restart: never
+    restart: no
     ports:
       - 3000:3000
     depends_on:

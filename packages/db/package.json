@@ -8,6 +8,7 @@
     "aws-sdk": "^2.1692.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^14.0.1",
+    "ts-node": "^10.9.2",
     "typescript": "5.8.2"
   },
   "exports": {
@@ -22,7 +23,7 @@
   },
   "scripts": {
     "build": "bunup src/data-source.ts --target=bun --dts",
-    "typeorm": "typeorm-ts-node-commonjs -d ./src/data-source",
+    "typeorm": "bunx typeorm-ts-node-esm -d ./dist/data-source.js",
     "generate": "bun run --env-file ./../../.env.local typeorm migration:generate"
   }
 }
