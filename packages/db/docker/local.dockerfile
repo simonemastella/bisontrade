@@ -13,6 +13,7 @@ COPY tsconfig.json ./
 
 # Install dependencies
 RUN bun install
+RUN bun run db build
 
 # Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
