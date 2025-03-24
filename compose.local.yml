@@ -2,7 +2,7 @@ services:
   api-gateway:
     build:
       context: .
-      dockerfile: ./apps/api-gateway/docker/local.dockerfile
+      dockerfile: ./apps/api-gateway/docker/Dockerfile.local
     restart: no
     ports:
       - 3000:3000
@@ -30,7 +30,7 @@ services:
   db-migrations:
     build:
       context: .
-      dockerfile: ./packages/db/docker/local.dockerfile
+      dockerfile: ./packages/db/docker/Dockerfile.local
     depends_on:
       postgres:
         condition: service_healthy

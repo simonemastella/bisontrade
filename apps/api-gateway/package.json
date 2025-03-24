@@ -22,6 +22,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "@bisontrade/db": "workspace:^",
+    "@bisontrade/libs": "workspace:^",
     "typeorm": "^0.3.21"
   },
   "devDependencies": {

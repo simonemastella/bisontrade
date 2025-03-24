@@ -1,5 +1,5 @@
-import { Type, Static, TSchema } from '@sinclair/typebox';
-import { AssertError, Value } from '@sinclair/typebox/value';
+import { Type, Static } from '@sinclair/typebox';
+import { loadEnv } from '@bisontrade/libs';
 
 const EnvBESchema = Type.Object({
   NODE_ENV: Type.Union([
@@ -13,25 +13,11 @@ const EnvBESchema = Type.Object({
   POSTGRES_PASSWORD: Type.String(),
   POSTGRES_DB: Type.String(),
   JWT_SECRET: Type.String({ minLength: 64, maxLength: 64 }),
-  JWT_ALGORITHM: Type.Union([Type.Literal('HS256')]).default('HS256'),
-  JWT_EXPIRE: Type.String().default('24h'),
+  JWT_ALGORITHM: Type.Union([Type.Literal('HS256')], { default: 'HS256' }),
+  JWT_EXPIRE: Type.String({ default: '24h' }),
 });
 type StaticEnv = Static<typeof EnvBESchema>;
 
-let env: StaticEnv;
-
-try {
-  // @ts-ignore
-  env = Value.Parse(EnvBESchema, process.env);
-} catch (error) {
-  if (error instanceof AssertError) {
-    const errors = Array.from(error.Errors())
-      .filter((e) => e.type !== 45) // removing missing keys
-      .map((e) => `\t${e.path}: received ${e.value} => ${e.message}`)
-      .join('\n');
-    throw new Error(`Invalid environment:\n${errors}`);
-  }
-  throw error;
-}
+const env = loadEnv<StaticEnv>(EnvBESchema);
 
 export default env;

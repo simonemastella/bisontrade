@@ -8,12 +8,12 @@
     "aws-sdk": "^2.1692.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^14.0.1",
+    "@bisontrade/libs": "workspace:^",
     "ts-node": "^10.9.2",
     "typescript": "5.8.2"
   },
-  "exports": {
-    ".": "./dist/data-source.d.ts"
-  },
+  "main": "./dist/data-source.js",
+  "types": "./dist/data-source.d.ts",
   "dependencies": {
     "typeorm": "0.3.21",
     "reflect-metadata": "^0.1.13",
@@ -22,7 +22,7 @@
     "@sinclair/typebox": "^0.34.30"
   },
   "scripts": {
-    "build": "bunup src/data-source.ts --target=bun --dts",
+    "build": "bun build src/data-source.ts --outdir dist --target bun --format esm --splitting && bun run tsc --emitDeclarationOnly --outDir dist",
     "typeorm": "bunx typeorm-ts-node-esm -d ./dist/data-source.js",
     "generate": "bun run --env-file ./../../.env.local typeorm migration:generate"
   }

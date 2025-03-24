@@ -8,6 +8,7 @@
   "scripts": {
     "api": "bun run --cwd apps/api-gateway",
     "db": "bun run --cwd packages/db",
+    "libs": "bun run --cwd packages/libs",
     "local:start": "docker compose -f compose.local.yml --env-file ./.env.local up --build -d",
     "local:stop": "docker-compose -f compose.local.yml down",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
@@ -18,7 +19,6 @@
     "@types/bun": "latest",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
-    "bunup": "^0.1.30",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-import": "^2.31.0",
