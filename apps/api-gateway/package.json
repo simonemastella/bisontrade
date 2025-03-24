@@ -17,8 +17,13 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.7",
     "@nestjs/swagger": "^11.0.3",
+    "@nestjs/typeorm": "^11.0.0",
+    "pg": "^8.11.3",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "@bisontrade/db": "workspace:^",
+    "@bisontrade/libs": "workspace:^",
+    "typeorm": "^0.3.21"
   },
   "devDependencies": {
     "@types/bun": "latest",

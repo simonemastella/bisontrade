@@ -1,11 +1,16 @@
 {
   "name": "@bisontrade/libs",
   "module": "index.ts",
-  "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@sinclair/typebox": "^0.34.30"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun --format esm --splitting && bun run tsc --emitDeclarationOnly --outDir dist"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
 }

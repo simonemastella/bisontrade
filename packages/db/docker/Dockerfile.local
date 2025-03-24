@@ -1,0 +1,26 @@
+FROM oven/bun:1.2.5 AS base
+
+WORKDIR /app/
+
+COPY package.json ./  
+COPY bun.lockb ./  
+COPY tsconfig.json ./  
+
+FROM base AS libs-build
+COPY ./packages/libs ./packages/libs
+RUN bun install
+RUN bun run libs build
+
+FROM base AS runtime
+RUN addgroup --system nonroot \
+    && adduser --system --ingroup nonroot nonroot
+
+COPY --chown=nonroot:nonroot --chmod=755 --from=libs-build /app/packages/libs/dist /app/packages/libs/dist
+COPY --chown=nonroot:nonroot --chmod=755 --from=libs-build /app/packages/libs/package.json /app/packages/libs/package.json
+COPY --chown=nonroot:nonroot --chmod=755 ./packages/db ./packages/db
+RUN bun install && bun run db build
+
+
+USER nonroot
+
+ENTRYPOINT ["bun", "run", "db", "typeorm", "migration:run"]

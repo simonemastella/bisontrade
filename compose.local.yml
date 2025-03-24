@@ -1,0 +1,42 @@
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/docker/Dockerfile.local
+    restart: no
+    ports:
+      - 3000:3000
+    depends_on:
+      db-migrations:
+        condition: service_completed_successfully
+    env_file:
+      - .env.local
+
+  postgres:
+    image: postgres:17
+    restart: always
+    env_file:
+      - .env.local
+    ports:
+      - '5432:5432'
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-migrations:
+    build:
+      context: .
+      dockerfile: ./packages/db/docker/Dockerfile.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env.local
+    restart: 'no' # Run once and exit
+
+# volumes:
+#   postgres_data:

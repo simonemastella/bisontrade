@@ -1,4 +1,5 @@
 import {
+  type Relation,
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
@@ -10,8 +11,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-import { Asset } from './Asset';
-import { Order } from './Order';
+import { Asset, Order } from '.';
 
 @Entity()
 @Index(['baseAsset', 'quoteAsset'], { unique: true })
@@ -20,16 +20,16 @@ export class TradePair {
   id: number;
 
   @ManyToOne(() => Asset, { nullable: false })
-  baseAsset: Asset;
+  baseAsset: Relation<Asset>;
 
   @ManyToOne(() => Asset, { nullable: false })
-  quoteAsset: Asset;
+  quoteAsset: Relation<Asset>;
 
   @Column({ nullable: true })
   symbol: string;
 
   @OneToMany(() => Order, (order) => order.tradePair)
-  orders: Order[];
+  orders: Relation<Order[]>;
 
   @Column('decimal', { precision: 36, scale: 18 })
   tick_size: string;

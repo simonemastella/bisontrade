@@ -1,6 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-
-import { Holding } from './Holding';
+import {
+  type Relation,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+} from 'typeorm';
+import { Holding } from '.';
 
 export enum OperationType {
   WITHDRAW = 'withdraw',
@@ -13,7 +18,7 @@ export class Operation {
   id: number;
 
   @ManyToOne(() => Holding, (holding) => holding.operations)
-  holding: Holding;
+  holding: Relation<Holding>;
 
   @Column({
     type: 'enum',
