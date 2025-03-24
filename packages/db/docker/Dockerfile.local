@@ -1,28 +1,27 @@
-# docker/dev.Dockerfile
 FROM oven/bun:1.2.5 AS base
 
 WORKDIR /app/
 
-# Copy only package files first to leverage Docker caching
-COPY package.json ./
-COPY bun.lockb ./
-COPY tsconfig.json ./
-
+COPY package.json ./  
+COPY bun.lockb ./  
+COPY tsconfig.json ./  
 
 FROM base AS libs-build
 COPY ./packages/libs ./packages/libs
 RUN bun install
 RUN bun run libs build
-# Copy application code after dependencies
+
 FROM base AS runtime
-COPY --from=libs-build /app/packages/libs/dist /app/packages/libs/dist
-COPY --from=libs-build /app/packages/libs/package.json /app/packages/libs/package.json
-COPY ./packages/db ./packages/db
+RUN addgroup --system nonroot \
+    && adduser --system --ingroup nonroot nonroot
+
+COPY --chown=nonroot:nonroot --from=libs-build /app/packages/libs/dist /app/packages/libs/dist
+COPY --chown=nonroot:nonroot --from=libs-build /app/packages/libs/package.json /app/packages/libs/package.json
+COPY --chown=nonroot:nonroot ./packages/db ./packages/db
 RUN bun install
 RUN bun run db build
 
-# Disable Next.js telemetry
-ENV NEXT_TELEMETRY_DISABLED=1
 
-# Start the application
+USER nonroot
+
 ENTRYPOINT ["bun", "run", "db", "typeorm", "migration:run"]

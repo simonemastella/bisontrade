@@ -4,7 +4,7 @@ FROM oven/bun:1.2.5-slim AS base
 
 WORKDIR /app/
 
-# Copy only package files first to leverage Docker caching
+
 COPY package.json ./
 COPY bun.lockb ./
 COPY tsconfig.json ./
@@ -23,23 +23,22 @@ RUN bun run db build
 
 
 FROM base AS runtime
-COPY --from=db-build /app/packages/db/dist /app/packages/db/dist
-COPY --from=db-build /app/packages/db/package.json /app/packages/db/package.json
+RUN addgroup --system nonroot \
+    && adduser --system --ingroup nonroot nonroot
+
+COPY --chown=nonroot:nonroot --from=db-build /app/packages/db/dist /app/packages/db/dist
+COPY --chown=nonroot:nonroot --from=db-build /app/packages/db/package.json /app/packages/db/package.json
 # we can copy * from libs since is already filtered
-COPY --from=db-build /app/packages/libs/ /app/packages/libs
+COPY --chown=nonroot:nonroot --from=db-build /app/packages/libs/ /app/packages/libs
+COPY --chown=nonroot:nonroot ./apps/api-gateway ./apps/api-gateway
 
-
-# Copy application code after dependencies
-COPY ./apps/api-gateway ./apps/api-gateway
-
-# Install dependencies
 RUN bun install
 
 # Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the application
 RUN bun run api build
 
-# Start the application
+
+USER nonroot
 ENTRYPOINT ["bun", "run", "api", "start"]
