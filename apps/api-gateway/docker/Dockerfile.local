@@ -26,11 +26,11 @@ FROM base AS runtime
 RUN addgroup --system nonroot \
     && adduser --system --ingroup nonroot nonroot
 
-COPY --chown=nonroot:nonroot --from=db-build /app/packages/db/dist /app/packages/db/dist
-COPY --chown=nonroot:nonroot --from=db-build /app/packages/db/package.json /app/packages/db/package.json
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/db/dist /app/packages/db/dist
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/db/package.json /app/packages/db/package.json
 # we can copy * from libs since is already filtered
-COPY --chown=nonroot:nonroot --from=db-build /app/packages/libs/ /app/packages/libs
-COPY --chown=nonroot:nonroot ./apps/api-gateway ./apps/api-gateway
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/libs/ /app/packages/libs
+COPY --chown=nonroot:nonroot --chmod=755 ./apps/api-gateway ./apps/api-gateway
 
 RUN bun install
 
