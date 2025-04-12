@@ -1,36 +1,44 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiBody, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { Type, Static } from '@sinclair/typebox';
+import { Validate } from 'nestjs-typebox';
 
-class LoginResponseDto {
-  @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR...' })
-  access_token!: string;
-}
+const AuthResponse = Type.Object(
+  {
+    access_token: Type.String(),
+  },
+  { additionalProperties: false }
+);
+type TAuthResponse = Static<typeof AuthResponse>;
 
-class LoginDto {
-  @ApiProperty({ example: 'testuser' })
-  username!: string;
-
-  @ApiProperty({ example: 'password123' })
-  password!: string;
-}
+const AuthRequest = Type.Object(
+  {
+    username: Type.String(),
+    password: Type.String(),
+  },
+  { additionalProperties: false }
+);
+type TAuthRequest = Static<typeof AuthRequest>;
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  register(
-    @Body('username') username: string,
-    @Body('password') password: string
-  ) {
-    return this.authService.register(username, password);
+  @Validate({
+    request: [{ type: 'body', schema: AuthRequest, name: 'body' }],
+    response: { responseCode: 200, schema: AuthResponse },
+  })
+  register(body: TAuthRequest): Promise<TAuthResponse> {
+    return this.authService.register(body.username, body.password);
   }
 
   @Post('login')
-  @ApiBody({ type: LoginDto }) // 👈 Explicitly define the request body
-  @ApiResponse({ status: 200, type: LoginResponseDto })
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto.username, loginDto.password);
+  @Validate({
+    request: [{ type: 'body', schema: AuthRequest, name: 'body' }],
+    response: { responseCode: 200, schema: AuthResponse },
+  })
+  login(body: TAuthRequest): Promise<TAuthResponse> {
+    return this.authService.login(body.username, body.password);
   }
 }
