@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Type, Static } from '@sinclair/typebox';
 import { Validate } from 'nestjs-typebox';
@@ -22,7 +22,7 @@ type TAuthRequest = Static<typeof AuthRequest>;
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(readonly authService: AuthService) {}
 
   @Post('register')
   @Validate({

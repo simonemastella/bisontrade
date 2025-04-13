@@ -8,7 +8,7 @@ import { User } from '@bisontrade/db';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    readonly usersRepository: Repository<User>
   ) {}
 
   async createUser(username: string, password: string) {
@@ -26,7 +26,7 @@ export class UsersService {
 
   async validateUser(username: string, password: string) {
     const user = await this.findUser(username);
-    if (user && user.checkPassword(password)) {
+    if (user?.checkPassword(password)) {
       return user;
     }
     return null;
