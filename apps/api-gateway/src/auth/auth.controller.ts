@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Type, Static } from '@sinclair/typebox';
 import { Validate } from 'nestjs-typebox';
 import { Auth, AuthenticatedRequest } from './auth.decorator';
-import { User } from '@bisontrade/db';
 
 const AuthResponse = Type.Object(
   {
