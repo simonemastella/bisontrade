@@ -2,6 +2,7 @@ import { applyDecorators, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Type, Static } from '@sinclair/typebox';
+import { Request } from 'express';
 
 export function Auth() {
   return applyDecorators(UseGuards(AuthGuard('jwt')), ApiBearerAuth());

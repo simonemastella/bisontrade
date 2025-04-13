@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 
 import { AppModule } from './app.module';
 import { configureNestJsTypebox } from 'nestjs-typebox';
@@ -19,7 +20,7 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  app.use('/api-json', (_: any, res: { json: (arg0: Document) => void }) => {
+  app.use('/api-json', (_: Request, res: Response) => {
     res.json(document);
   });
 
