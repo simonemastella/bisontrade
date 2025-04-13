@@ -4,13 +4,20 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import env from '../env';
 
 @Module({
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: 'your-secret-key',
-      signOptions: { expiresIn: '1h' },
+      secret: env.JWT_SECRET,
+
+      signOptions: {
+        expiresIn: env.JWT_EXPIRE,
+        algorithm: env.JWT_ALGORITHM,
+
+        allowInsecureKeySizes: false,
+      },
     }),
   ],
   providers: [AuthService, JwtStrategy],

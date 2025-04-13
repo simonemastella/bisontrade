@@ -1,7 +1,9 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Type, Static } from '@sinclair/typebox';
 import { Validate } from 'nestjs-typebox';
+import { Auth, AuthenticatedRequest } from './auth.decorator';
+import { User } from '@bisontrade/db';
 
 const AuthResponse = Type.Object(
   {
@@ -40,5 +42,19 @@ export class AuthController {
   })
   login(body: TAuthRequest): Promise<TAuthResponse> {
     return this.authService.login(body.username, body.password);
+  }
+
+  @Get('protected')
+  @Auth()
+  @Validate({
+    response: {
+      responseCode: 200,
+      schema: Type.Object({ message: Type.String() }),
+    },
+  })
+  prot(@Req() req: AuthenticatedRequest) {
+    return {
+      message: `hello ${JSON.stringify(req.user)}`,
+    };
   }
 }
