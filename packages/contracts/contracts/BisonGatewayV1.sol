@@ -1,17 +1,17 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
 import {AccessControl} from '@openzeppelin/contracts/access/AccessControl.sol';
 import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import {ReentrancyGuard} from '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 
 contract BisonGatewayV1 is AccessControl, ReentrancyGuard {
+    mapping(address token => bool allowed) public tokenAllowList;
+
     event Deposit(
         address indexed token,
         uint256 amount,
-        bytes16 indexed uuid,
+        uint256 indexed userId,
         address indexed sender
     );
     event WithdrawSucceeded(
@@ -25,21 +25,34 @@ contract BisonGatewayV1 is AccessControl, ReentrancyGuard {
         address indexed beneficiary,
         bytes error
     );
+    event WhitelistToken(address indexed token, bool allow);
+
     error DepositFailed();
     error DepositZeroAmount();
 
-    constructor() {}
+    constructor() {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
 
-    function depositERC20(IERC20 token, uint256 amount, bytes16 uuid) public {
+    modifier onlyAllowed(address token) {
+        require(tokenAllowList[token], 'Token not whitelisted');
+        _;
+    }
+
+    function depositERC20(
+        IERC20 token,
+        uint256 amount,
+        uint256 userId
+    ) public onlyAllowed(address(token)) {
         if (amount == 0) revert DepositZeroAmount();
         if (!token.transferFrom(msg.sender, address(this), amount))
             revert DepositFailed();
-        emit Deposit(address(token), amount, uuid, msg.sender);
+        emit Deposit(address(token), amount, userId, msg.sender);
     }
 
-    function deposit(bytes16 uuid) public payable {
+    function deposit(uint256 userId) public payable onlyAllowed(address(0)) {
         if (msg.value == 0) revert DepositZeroAmount();
-        emit Deposit(address(0), msg.value, uuid, msg.sender);
+        emit Deposit(address(0), msg.value, userId, msg.sender);
     }
 
     function withdraw(
@@ -61,5 +74,13 @@ contract BisonGatewayV1 is AccessControl, ReentrancyGuard {
         bool success = token.transferFrom(msg.sender, address(this), amount);
         if (success) emit WithdrawSucceeded(address(0), amount, to);
         else emit WithdrawFailed(address(0), amount, to, '');
+    }
+
+    function whitelistToken(
+        address token,
+        bool allow
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        tokenAllowList[token] = allow;
+        emit WhitelistToken(token, allow);
     }
 }
