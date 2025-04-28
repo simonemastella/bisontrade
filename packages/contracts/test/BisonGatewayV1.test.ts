@@ -154,7 +154,7 @@ describe('BisonGatewatV1', function () {
       ).to.be.revertedWithCustomError(BGv1, 'AccessControlUnauthorizedAccount');
     });
 
-    it('should allow to withdraw erc20 funds', async () => {
+    it('should allow to withdraw funds', async () => {
       const { BGv1, addr1 } = await loadFixture(deployBGv1Fixture);
       await BGv1.deposit(1, { value: 10 });
       await expect(BGv1.withdraw(addr1.address, 10))
@@ -162,11 +162,48 @@ describe('BisonGatewatV1', function () {
         .withArgs(ethers.ZeroAddress, 10, addr1.address);
     });
 
-    it('should emit the failure of erc20 funds withdraw', async () => {
+    it('should emit the failure of funds withdraw', async () => {
       const { BGv1, addr1 } = await loadFixture(deployBGv1Fixture);
       await expect(BGv1.withdraw(addr1.address, 10))
         .to.emit(BGv1, 'WithdrawFailed')
         .withArgs(ethers.ZeroAddress, 10, addr1.address, '0x');
+    });
+
+    it('should not allow reentrancy', async () => {
+      const { BGv1, addr1 } = await loadFixture(deployBGv1Fixture);
+      await BGv1.deposit(1, { value: 30 });
+      const factory = await ethers.getContractFactory('ReentrantReceiver');
+      const Reentrancy = await factory.deploy();
+      await Reentrancy.waitForDeployment();
+      const amountBefore = await ethers.provider.getBalance(
+        await Reentrancy.getAddress()
+      );
+      const selector = ethers
+        .keccak256(ethers.toUtf8Bytes('ReentrancyGuardReentrantCall()'))
+        .slice(0, 10);
+
+      await expect(BGv1.withdraw(await Reentrancy.getAddress(), 10))
+        .to.emit(Reentrancy, 'Loop')
+        .withArgs(1, selector);
+      const amountAfter = await ethers.provider.getBalance(
+        await Reentrancy.getAddress()
+      );
+      expect(amountAfter).to.be.equal(amountBefore + 10n);
+    });
+
+    it('should allow to withdraw funds', async () => {
+      const { BGv1, WhitelistedToken, addr1 } =
+        await loadFixture(deployBGv1Fixture);
+      await WhitelistedToken.mint([await BGv1.getAddress()], [100n]);
+      await expect(
+        BGv1.withdrawERC20(
+          await WhitelistedToken.getAddress(),
+          addr1.address,
+          10
+        )
+      )
+        .to.emit(BGv1, 'WithdrawSucceeded')
+        .withArgs(await WhitelistedToken.getAddress(), 10, addr1.address);
     });
   });
 });

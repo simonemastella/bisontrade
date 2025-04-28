@@ -58,7 +58,7 @@ contract BisonGatewayV1 is AccessControl, ReentrancyGuard {
     function withdraw(
         address to,
         uint256 amount
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
+    ) public nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) {
         (bool success, bytes memory reason) = payable(to).call{value: amount}(
             ''
         );
@@ -70,10 +70,10 @@ contract BisonGatewayV1 is AccessControl, ReentrancyGuard {
         IERC20 token,
         address to,
         uint256 amount
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
-        bool success = token.transferFrom(msg.sender, address(this), amount);
-        if (success) emit WithdrawSucceeded(address(0), amount, to);
-        else emit WithdrawFailed(address(0), amount, to, '');
+    ) public nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) {
+        bool success = token.transfer(to, amount);
+        if (success) emit WithdrawSucceeded(address(token), amount, to);
+        else emit WithdrawFailed(address(token), amount, to, '');
     }
 
     function whitelistToken(
