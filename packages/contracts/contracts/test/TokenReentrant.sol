@@ -3,12 +3,19 @@
 pragma solidity ^0.8.27;
 
 import {ERC20} from '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import {IERC20} from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
-contract MyTokenWithFailTransfer is ERC20, Ownable {
+contract MyTokenReentrant is ERC20, Ownable {
+    uint256 index = 0;
+    event Scam(bool success, bytes data);
+    address otherToken;
+
     constructor(
-        address initialOwner
-    ) ERC20('MyToken', 'MTK') Ownable(initialOwner) {}
+        address otherToken_
+    ) ERC20('MyToken', 'MTK') Ownable(msg.sender) {
+        otherToken = otherToken_;
+    }
 
     function mint(
         address[] memory to,
@@ -32,6 +39,16 @@ contract MyTokenWithFailTransfer is ERC20, Ownable {
         address to,
         uint256 value
     ) public virtual override returns (bool) {
-        return false;
+        uint256 amount = IERC20(otherToken).balanceOf(msg.sender);
+        (bool success, bytes memory returnData) = msg.sender.call(
+            abi.encodeWithSelector(
+                bytes4(keccak256('withdrawERC20(address,address,uint256)')),
+                otherToken,
+                address(this),
+                amount
+            )
+        );
+        emit Scam(success, returnData);
+        return true;
     }
 }

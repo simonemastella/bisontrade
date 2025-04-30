@@ -88,7 +88,7 @@ describe('BisonGatewatV1', function () {
       const { BGv1, addr1, owner } = await loadFixture(deployBGv1Fixture);
 
       const factory = await ethers.getContractFactory(
-        'MyTokenWithFailTransferFrom'
+        'MyTokenWithFailTransfer'
       );
       const FailingToken = await factory.deploy(owner.address);
       await FailingToken.waitForDeployment();
@@ -192,7 +192,7 @@ describe('BisonGatewatV1', function () {
     });
 
     it('should allow to withdraw funds', async () => {
-      const { BGv1, WhitelistedToken, addr1 } =
+      const { BGv1, WhitelistedToken, addr1, owner } =
         await loadFixture(deployBGv1Fixture);
       await WhitelistedToken.mint([await BGv1.getAddress()], [100n]);
       await expect(
@@ -204,6 +204,79 @@ describe('BisonGatewatV1', function () {
       )
         .to.emit(BGv1, 'WithdrawSucceeded')
         .withArgs(await WhitelistedToken.getAddress(), 10, addr1.address);
+
+      const factory = await ethers.getContractFactory(
+        'MyTokenWithFailTransfer'
+      );
+      const FailingToken = await factory.deploy(owner.address);
+      await FailingToken.waitForDeployment();
+      await BGv1.connect(owner).whitelistToken(
+        await FailingToken.getAddress(),
+        true
+      );
+      await FailingToken.connect(owner).mint(
+        [addr1.address],
+        [ethers.parseEther('50')]
+      );
+
+      await expect(
+        BGv1.withdrawERC20(await FailingToken.getAddress(), addr1.address, 10)
+      )
+        .to.emit(BGv1, 'WithdrawFailed')
+        .withArgs(await FailingToken.getAddress(), 10, addr1.address, '0x');
+    });
+
+    it('should not allow ERC20 reentrancy', async () => {
+      const { BGv1, WhitelistedToken, addr1 } =
+        await loadFixture(deployBGv1Fixture);
+
+      //deploy of the fake token
+      const factory = await ethers.getContractFactory('MyTokenReentrant');
+      const Reentrancy = await factory.deploy(
+        await WhitelistedToken.getAddress()
+      );
+      await Reentrancy.waitForDeployment();
+
+      //mint both
+      await Reentrancy.mint([await BGv1.getAddress()], [100n]);
+      await WhitelistedToken.mint([await BGv1.getAddress()], [100n]);
+      const selector = ethers
+        .keccak256(ethers.toUtf8Bytes('ReentrancyGuardReentrantCall()'))
+        .slice(0, 10);
+      await expect(
+        BGv1.withdrawERC20(await Reentrancy.getAddress(), addr1.address, 10)
+      )
+        .to.emit(Reentrancy, 'Scam')
+        .withArgs(false, selector);
+    });
+
+    it('should erc20 token when the transferFrom returns an error', async () => {
+      const { BGv1, addr1, owner } = await loadFixture(deployBGv1Fixture);
+
+      const factory = await ethers.getContractFactory(
+        'MyTokenWithFailTransfer'
+      );
+      const FailingToken = await factory.deploy(owner.address);
+      await FailingToken.waitForDeployment();
+      await BGv1.connect(owner).whitelistToken(
+        await FailingToken.getAddress(),
+        true
+      );
+      await FailingToken.connect(owner).mint(
+        [addr1.address],
+        [ethers.parseEther('50')]
+      );
+      await FailingToken.connect(addr1).approve(
+        await BGv1.getAddress(),
+        ethers.parseEther('50')
+      );
+      await expect(
+        BGv1.connect(addr1).depositERC20(
+          await FailingToken.getAddress(),
+          ethers.parseEther('50'),
+          1
+        )
+      ).to.be.revertedWithCustomError(BGv1, 'DepositFailed');
     });
   });
 });

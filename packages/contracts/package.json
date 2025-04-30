@@ -9,7 +9,8 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "compile": "bunx --bun hardhat compile"
+    "compile": "bunx --bun hardhat compile",
+    "coverage": "bunx --bun hardhat coverage"
   },
   "dependencies": {
     "solhint": "^5.0.5"
