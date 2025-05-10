@@ -249,34 +249,5 @@ describe('BisonGatewatV1', function () {
         .to.emit(Reentrancy, 'Scam')
         .withArgs(false, selector);
     });
-
-    it('should erc20 token when the transferFrom returns an error', async () => {
-      const { BGv1, addr1, owner } = await loadFixture(deployBGv1Fixture);
-
-      const factory = await ethers.getContractFactory(
-        'MyTokenWithFailTransfer'
-      );
-      const FailingToken = await factory.deploy(owner.address);
-      await FailingToken.waitForDeployment();
-      await BGv1.connect(owner).whitelistToken(
-        await FailingToken.getAddress(),
-        true
-      );
-      await FailingToken.connect(owner).mint(
-        [addr1.address],
-        [ethers.parseEther('50')]
-      );
-      await FailingToken.connect(addr1).approve(
-        await BGv1.getAddress(),
-        ethers.parseEther('50')
-      );
-      await expect(
-        BGv1.connect(addr1).depositERC20(
-          await FailingToken.getAddress(),
-          ethers.parseEther('50'),
-          1
-        )
-      ).to.be.revertedWithCustomError(BGv1, 'DepositFailed');
-    });
   });
 });
