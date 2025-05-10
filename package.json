@@ -11,6 +11,7 @@
     "api": "bun run --cwd apps/api-gateway",
     "db": "bun run --cwd packages/db",
     "sc": "bun run --cwd packages/contracts",
+    "bl": "bun run --cwd apps/blockchain-listener",
     "libs": "bun run --cwd packages/libs",
     "local:start": "docker compose -f compose.local.yml --env-file ./.env.local up --build -d",
     "local:stop": "docker-compose -f compose.local.yml down",

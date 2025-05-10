@@ -1,0 +1,19 @@
+{
+  "name": "@bisontrade/blockchain-listener",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@bisontrade/contracts": "workspace:^",
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "ethers": "^6.13.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "run": "bun src/index.ts"
+  }
+}
