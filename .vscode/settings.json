@@ -6,5 +6,9 @@
     "source.fixAll": "always",
     "source.fixAll.eslint": "always"
   },
-  "eslint.alwaysShowStatus": true
+  "eslint.alwaysShowStatus": true,
+  "solidity.compileUsingRemoteVersion": "v0.8.20+commit.7893614a",
+  "[solidity]": {
+    "editor.defaultFormatter": "NomicFoundation.hardhat-solidity"
+  }
 }
