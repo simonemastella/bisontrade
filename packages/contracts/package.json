@@ -1,16 +1,25 @@
 {
   "name": "@bisontrade/contracts",
+  "version": "0.0.1",
+  "description": "",
   "private": true,
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.11",
     "@types/bun": "latest",
     "hardhat": "^2.23.0",
+    "@vechain/sdk-core": "^1.2.0-rc.2",
+    "@vechain/sdk-hardhat-plugin": "^1.2.0-rc.2",
     "@openzeppelin/contracts": "^5.3.0",
+    "dotenv": "^16.5.0",
     "typescript": "^5.8.3"
   },
+  "main": "./typechain-types/index.ts",
   "scripts": {
-    "compile": "bunx --bun hardhat compile",
-    "coverage": "bunx --bun hardhat coverage"
+    "compile": "bunx hardhat compile",
+    "coverage": "bunx hardhat coverage",
+    "ignition": "bunx hardhat ignition",
+    "script": "bunx hardhat run"
   },
   "dependencies": {
     "solhint": "^5.0.5"
