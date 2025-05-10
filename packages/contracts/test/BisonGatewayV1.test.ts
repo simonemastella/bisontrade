@@ -114,8 +114,7 @@ describe('BisonGatewatV1', function () {
     });
 
     it('should allow to deposit native token only when whitelisted', async () => {
-      const { BGv1, addr1, WhitelistedToken } =
-        await loadFixture(deployBGv1Fixture);
+      const { BGv1, addr1 } = await loadFixture(deployBGv1Fixture);
       await expect(
         BGv1.connect(addr1).deposit(1, { value: ethers.parseEther('50') })
       )
@@ -170,7 +169,7 @@ describe('BisonGatewatV1', function () {
     });
 
     it('should not allow reentrancy', async () => {
-      const { BGv1, addr1 } = await loadFixture(deployBGv1Fixture);
+      const { BGv1 } = await loadFixture(deployBGv1Fixture);
       await BGv1.deposit(1, { value: 30 });
       const factory = await ethers.getContractFactory('ReentrantReceiver');
       const Reentrancy = await factory.deploy();
