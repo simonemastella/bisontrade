@@ -1,0 +1,54 @@
+# docker/dev.Dockerfile
+
+FROM oven/bun:1.2.5-slim AS base
+
+WORKDIR /app/
+
+
+COPY package.json ./
+COPY bun.lockb ./
+COPY tsconfig.json ./
+
+FROM base AS contracts-build
+COPY ./packages/contracts ./packages/contracts
+RUN bun install
+RUN bun run sc compile
+RUN bun run sc build
+
+FROM base AS libs-build
+COPY ./packages/libs ./packages/libs
+RUN bun install
+RUN bun run libs build
+
+FROM base AS db-build
+COPY --from=libs-build /app/packages/libs/dist /app/packages/libs/dist
+COPY --from=libs-build /app/packages/libs/package.json /app/packages/libs/package.json
+COPY ./packages/db ./packages/db
+RUN bun install
+RUN bun run db build
+
+
+FROM base AS runtime
+RUN addgroup --system nonroot \
+    && adduser --system --ingroup nonroot nonroot
+
+# contracts
+COPY --chown=nonroot:nonroot --chmod=755 --from=contracts-build /app/packages/contracts/dist /app/packages/contracts/dist
+COPY --chown=nonroot:nonroot --chmod=755 --from=contracts-build /app/packages/contracts/package.json /app/packages/contracts/package.json
+# db
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/db/dist /app/packages/db/dist
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/db/package.json /app/packages/db/package.json
+# we can copy * from libs since is already filtered
+COPY --chown=nonroot:nonroot --chmod=755 --from=db-build /app/packages/libs/ /app/packages/libs
+COPY --chown=nonroot:nonroot --chmod=755 ./apps/blockchain-listener ./apps/blockchain-listener
+
+RUN bun install
+
+# Disable Next.js telemetry
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN bun run bl build
+
+
+USER nonroot
+ENTRYPOINT ["bun", "run", "bl", "start"]

@@ -4,16 +4,19 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@bisontrade/contracts": "workspace:^",
     "@types/bun": "latest"
   },
   "dependencies": {
-    "ethers": "^6.13.7"
+    "ethers": "^6.13.7",
+    "rxjs": "^7.8.2",
+    "@bisontrade/contracts": "workspace:^",
+    "@vechain/sdk-network": "^1.2.0-rc.2"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   },
   "scripts": {
-    "run": "bun src/index.ts"
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run  dist/index.js"
   }
 }

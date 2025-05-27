@@ -14,14 +14,17 @@
     "dotenv": "^16.5.0",
     "typescript": "^5.8.3"
   },
-  "main": "./typechain-types/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "compile": "bunx hardhat compile",
     "coverage": "bunx hardhat coverage",
     "ignition": "bunx hardhat ignition",
-    "script": "bunx hardhat run"
+    "script": "bunx hardhat run",
+    "build": "bun build typechain-types/index.ts --outdir dist --target bun --format esm --splitting && bun run tsc --emitDeclarationOnly --outDir dist"
   },
   "dependencies": {
     "solhint": "^5.0.5"
-  }
+  },
+  "module": "typechain-types/index.ts"
 }

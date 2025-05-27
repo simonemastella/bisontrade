@@ -10,7 +10,20 @@ services:
       db-migrations:
         condition: service_completed_successfully
     env_file:
-      - .env.local
+      - ./env/local/.env.api-gateway
+
+  blockchain-listener:
+    build:
+      context: .
+      dockerfile: ./apps/blockchain-listener/docker/Dockerfile.local
+    restart: no
+    ports:
+      - 4000:4000
+    depends_on:
+      db-migrations:
+        condition: service_completed_successfully
+    env_file:
+      - ./env/local/.env.bl-vechain
 
   postgres:
     image: postgres:17
