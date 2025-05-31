@@ -1,5 +1,6 @@
 import { Subject, concatMap } from 'rxjs';
 import { ethers } from 'ethers';
+import { EventHandler } from './event_handler';
 
 export type SubjectPayload = {
   event: ethers.LogDescription;
@@ -17,6 +18,7 @@ export interface PollingStrategy {
 export class GenericEventProcessor {
   private queue = new Subject<SubjectPayload>();
   private lastBlock = 0; // TODO: Fetch from DB or state storage
+  private eventHandler = new EventHandler();
 
   constructor(private pollingStrategy: PollingStrategy) {}
 
@@ -29,8 +31,7 @@ export class GenericEventProcessor {
     this.queue
       .pipe(
         concatMap(async (item) => {
-          // TODO: Replace this with actual event handling logic
-          console.log(item);
+          await this.eventHandler.process(item);
         })
       )
       .subscribe({
